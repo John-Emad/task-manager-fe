@@ -7,7 +7,6 @@ import { UserContext } from "../Context/UserContext";
 import {
   MdTaskAlt,
   MdPerson,
-  MdVpnKey,
   MdAlternateEmail,
   MdLock,
   MdError,
