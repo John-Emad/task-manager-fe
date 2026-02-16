@@ -95,20 +95,15 @@ export default function Dashboard() {
             break;
 
           case "completed":
-            setDisplayedTasks(allTasks.filter((task) => task.isDone === true));
+            // Fetch completed tasks from API
+            const completedTasks = await taskService.getCompleted();
+            setDisplayedTasks(completedTasks);
             break;
 
           case "pending":
-            // Pending: not done and not overdue
-            setDisplayedTasks(
-              allTasks.filter((task) => {
-                if (task.isDone) return false;
-                if (!task.dueDate) return true;
-                const dueDate = new Date(task.dueDate);
-                const now = new Date();
-                return dueDate >= now;
-              }),
-            );
+            // Fetch pending tasks from API (not done and not overdue)
+            const pendingTasks = await taskService.getPending();
+            setDisplayedTasks(pendingTasks);
             break;
 
           case "overdue":

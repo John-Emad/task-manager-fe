@@ -81,4 +81,28 @@ export const taskService = {
     );
     return response.data;
   },
+
+  // Get pending tasks (not done and not overdue)
+  async getPending(): Promise<Task[]> {
+    const response = await api.get<Task[]>(
+      API_CONFIG.ENDPOINTS.TASK.GET_ALL_FOR_USER,
+      { params: { isDone: false } },
+    );
+    // Filter out overdue tasks on the client side
+    const now = new Date();
+    return response.data.filter((task) => {
+      if (!task.dueDate) return true; // Tasks without due date are pending
+      const dueDate = new Date(task.dueDate);
+      return dueDate >= now; // Not overdue
+    });
+  },
+
+  // Get completed tasks
+  async getCompleted(): Promise<Task[]> {
+    const response = await api.get<Task[]>(
+      API_CONFIG.ENDPOINTS.TASK.GET_ALL_FOR_USER,
+      { params: { isDone: true } },
+    );
+    return response.data;
+  },
 };
