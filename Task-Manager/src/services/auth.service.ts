@@ -7,32 +7,38 @@ import type { User } from "../types/user.type";
 export const authService = {
   // Login a system user
   async login(credentials: SignInFormData): Promise<User> {
-    const response = await api.post<User>(
+    const response = await api.post<{ user: User }>(
       API_CONFIG.ENDPOINTS.AUTH.LOGIN,
       credentials,
     );
 
+    // Extract user from nested response
+    const user = response.data.user;
+
     // Store user data in localStorage for UI rendering
-    if (response.data) {
-      localStorage.setItem("user", JSON.stringify(response.data));
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
     }
 
-    return response.data;
+    return user;
   },
 
   // Register new user
   async register(userData: SignUpFormData): Promise<User> {
-    const response = await api.post<User>(
+    const response = await api.post<{ user: User }>(
       API_CONFIG.ENDPOINTS.AUTH.REGISTER,
       userData,
     );
 
+    // Extract user from nested response
+    const user = response.data.user;
+
     // Store user data in localStorage for UI rendering
-    if (response.data) {
-      localStorage.setItem("user", JSON.stringify(response.data));
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
     }
 
-    return response.data;
+    return user;
   },
 
   // Get current user profile
@@ -41,18 +47,23 @@ export const authService = {
       API_CONFIG.ENDPOINTS.USER.GET_BY_ID("me"),
     );
 
+    // Extract user from nested response
+    const user = response.data;
+
     // Update user data in localStorage
-    if (response.data) {
-      localStorage.setItem("user", JSON.stringify(response.data));
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
     }
 
-    return response.data;
+    return user;
   },
 
   //Logout current user
   async logout(): Promise<{ message: string }> {
     try {
-      const response = await api.post<{ message: string }>(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
+      const response = await api.post<{ message: string }>(
+        API_CONFIG.ENDPOINTS.AUTH.LOGOUT,
+      );
       return response.data;
     } finally {
       // Clear user data from localStorage
