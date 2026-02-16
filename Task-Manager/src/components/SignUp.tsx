@@ -1,8 +1,15 @@
-import type { SignUpFormData } from "../types/auth";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import type { SignUpFormData } from "../types/auth.type";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { authService } from "../services/auth.service";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const {
     register,
     control,
@@ -10,7 +17,24 @@ export default function SignUp() {
     formState: { errors },
   } = useForm<SignUpFormData>();
 
-  const onSubmit = (data: SignUpFormData) => console.log(data);
+  const onSubmit = async (data: SignUpFormData) => {
+    setIsLoading(true);
+    setApiError(null);
+
+    try {
+      await authService.register(data);
+      // Navigate to dashboard or home page after successful registration
+      navigate("/dashboard");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to sign up. Please try again.";
+      setApiError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-5 bg-linear-to-br from-purple-600 to-purple-800">
@@ -23,6 +47,13 @@ export default function SignUp() {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          {/* API Error Message */}
+          {apiError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{apiError}</p>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             {/* First name */}
             <div className="flex flex-col gap-1.5">
@@ -178,12 +209,23 @@ export default function SignUp() {
 
           <button
             type="submit"
-            className="mt-2 py-3.5 bg-linear-to-r from-purple-600 to-purple-800 text-white rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-400/40 active:translate-y-0"
+            disabled={isLoading}
+            className="mt-2 py-3.5 bg-linear-to-r from-purple-600 to-purple-800 text-white rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-400/40 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            Sign Up
+            {isLoading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
         <DevTool control={control} />
+
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Already have an account?{" "}
+          <Link
+            to="/signin"
+            className="text-purple-600 font-semibold hover:text-purple-800 hover:underline transition-colors"
+          >
+            Sign In
+          </Link>
+        </p>
       </div>
     </div>
   );

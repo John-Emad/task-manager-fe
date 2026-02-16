@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import type { FormErrors, SignInFormData } from "../types/auth";
+import { Link, useNavigate } from "react-router-dom";
+import type { SignInFormData } from "../types/auth.type";
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
+import { authService } from "../services/auth.service";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const {
     register,
     control,
@@ -12,7 +17,24 @@ export default function SignIn() {
     formState: { errors },
   } = useForm<SignInFormData>();
 
-  const onSubmit = (data: SignInFormData) => console.log(data);
+  const onSubmit = async (data: SignInFormData) => {
+    setIsLoading(true);
+    setApiError(null);
+
+    try {
+      await authService.login(data);
+      // Navigate to dashboard or home page after successful login
+      navigate("/dashboard");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to sign in. Please try again.";
+      setApiError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-5 bg-linear-to-br from-purple-600 to-purple-800">
@@ -25,6 +47,13 @@ export default function SignIn() {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          {/* API Error Message */}
+          {apiError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{apiError}</p>
+            </div>
+          )}
+
           {/*Email */}
           <div className="flex flex-col gap-1.5">
             <label
@@ -91,9 +120,10 @@ export default function SignIn() {
 
           <button
             type="submit"
-            className="mt-2 py-3.5 bg-linear-to-r from-purple-600 to-purple-800 text-white rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-400/40 active:translate-y-0"
+            disabled={isLoading}
+            className="mt-2 py-3.5 bg-linear-to-r from-purple-600 to-purple-800 text-white rounded-lg text-base font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-purple-400/40 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
-            Sign In
+            {isLoading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
