@@ -38,7 +38,7 @@ export const authService = {
   // Get current user profile
   async getProfile(): Promise<User> {
     const response = await api.get<User>(
-      API_CONFIG.ENDPOINTS.USER.GET_BY_ID.replace(":id", "me"),
+      API_CONFIG.ENDPOINTS.USER.GET_BY_ID("me"),
     );
 
     // Update user data in localStorage
