@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-tomato: #f15946;
+  --color-navy: #1f006c;
+  --color-tuscan-sun: #f9c22e;
+  --color-pacific-blue: #53b3cb;
+}
+
 /* Custom Animations */
 @keyframes blob {
   0% {
@@ -50,4 +57,32 @@
 
 .animate-shake {
   animation: shake 0.5s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
 }
