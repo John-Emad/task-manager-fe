@@ -12,7 +12,7 @@ export default function SignIn() {
 
   const {
     register,
-    control,
+    // control,
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormData>();
@@ -80,8 +80,8 @@ export default function SignIn() {
         >
           {/* API Error Message */}
           {apiError && (
-            <div className="p-3 sm:p-4 bg-[#f15946]/10 border border-[#f15946]/30 rounded-xl animate-shake">
-              <p className="text-sm text-[#f15946] font-medium">{apiError}</p>
+            <div className="p-3 sm:p-4 bg-tomato/10 border border-tomato/30 rounded-xl animate-shake">
+              <p className="text-sm text-tomato font-medium">{apiError}</p>
             </div>
           )}
 
@@ -89,7 +89,7 @@ export default function SignIn() {
           <div className="flex flex-col gap-2">
             <label
               htmlFor="email"
-              className="text-sm font-semibold text-[#1f006c] flex items-center gap-2"
+              className="text-sm font-semibold text-navy flex items-center gap-2"
             >
               <svg
                 className="w-4 h-4"
@@ -145,7 +145,7 @@ export default function SignIn() {
           <div className="flex flex-col gap-2">
             <label
               htmlFor="password"
-              className="text-sm font-semibold text-[#1f006c] flex items-center gap-2"
+              className="text-sm font-semibold text-navy flex items-center gap-2"
             >
               <svg
                 className="w-4 h-4"
@@ -258,7 +258,7 @@ export default function SignIn() {
             Don't have an account?{" "}
             <Link
               to="/signup"
-              className="text-[#53b3cb] font-semibold hover:text-[#1f006c] hover:underline transition-colors inline-flex items-center gap-1"
+              className="text-[#53b3cb] font-semibold hover:text-navy hover:underline transition-colors inline-flex items-center gap-1"
             >
               Sign Up
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
