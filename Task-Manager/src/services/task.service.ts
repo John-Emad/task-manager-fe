@@ -86,7 +86,7 @@ export const taskService = {
   async getPending(): Promise<Task[]> {
     const response = await api.get<Task[]>(
       API_CONFIG.ENDPOINTS.TASK.GET_ALL_FOR_USER,
-      { params: { isDone: false } },
+      { params: { isDone: false , dueDateFrom: new Date() } },
     );
     // Filter out overdue tasks on the client side
     const now = new Date();
